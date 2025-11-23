@@ -1,0 +1,25 @@
+# Ignora arquivos compilados localmente
+target/
+!target/*.war
+
+# Ignora configurações de IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Ignora arquivos de log
+*.log
+
+# Ignora arquivos temporários do Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignora Git
+.git/
+.gitignore
+
+# Ignora README e documentação
+README.md
+docs/
