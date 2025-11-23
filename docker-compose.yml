@@ -1,0 +1,129 @@
+
+
+# ========================================
+# DEFINIÇÃO DOS SERVIÇOS (CONTAINERS)
+# ========================================
+services:
+  
+  # ==================== BANCO DE DADOS ====================
+  db:
+    # Imagem oficial do PostgreSQL 16
+    image: postgres:16-alpine
+    
+    # Nome do container
+    container_name: gestao-eventos-db
+    
+    # Reinicia automaticamente se der erro
+    restart: unless-stopped
+    
+    # Variáveis de ambiente do PostgreSQL
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    
+    # Mapeia a porta 5432 do container para 5433 do host
+    # Formato: HOST:CONTAINER
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    
+    # Volume para persistir dados do banco
+    # Mesmo que o container seja removido, os dados permanecem
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+    # Conecta à rede dedicada
+    networks:
+      - gestao-eventos-network
+    
+    # Health check para garantir que o banco está pronto
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================== BACKEND (Spring Boot) ====================
+  backend:
+    # Constrói a imagem a partir do Dockerfile do backend
+    build:
+      context: ./gestaoEventosBackend
+      dockerfile: Dockerfile
+    
+    container_name: gestao-eventos-backend
+    restart: unless-stopped
+    
+    # Variáveis de ambiente para o Spring Boot
+    environment:
+      # Sobrescreve as configurações do application.properties
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SERVER_SERVLET_CONTEXT_PATH: /gestaoEventosBackend
+    
+    # Mapeia a porta 8080 do container para 8080 do host
+    ports:
+      - "${BACKEND_PORT}:8080"
+    
+    # Depende do banco de dados (espera o health check passar)
+    depends_on:
+      db:
+        condition: service_healthy
+    
+    networks:
+      - gestao-eventos-network
+    
+    # Health check para garantir que o backend está respondendo
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/gestaoEventosBackend/evento/GET/api/events?page=0&size=1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ==================== FRONTEND (Angular + Nginx) ====================
+  frontend:
+    # Constrói a imagem a partir do Dockerfile do frontend
+    build:
+      context: ./gestaoEventosFrontend
+      dockerfile: Dockerfile
+    
+    container_name: gestao-eventos-frontend
+    restart: unless-stopped
+    
+    # Mapeia a porta 80 do container para 4200 do host
+    ports:
+      - "${FRONTEND_PORT}:80"
+    
+    # Depende do backend estar saudável
+    depends_on:
+      backend:
+        condition: service_healthy
+    
+    networks:
+      - gestao-eventos-network
+    
+    # Health check para o Nginx
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ========================================
+# VOLUMES PERSISTENTES
+# ========================================
+volumes:
+  # Volume nomeado para dados do PostgreSQL
+  postgres_data:
+    driver: local
+
+# ========================================
+# REDE DEDICADA
+# ========================================
+networks:
+  # Cria uma rede bridge isolada para os containers
+  gestao-eventos-network:
+    driver: bridge

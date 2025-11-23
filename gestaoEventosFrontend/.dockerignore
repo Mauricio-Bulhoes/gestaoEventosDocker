@@ -1,0 +1,32 @@
+# Ignora node_modules (será reinstalado no build)
+node_modules/
+
+# Ignora arquivos compilados localmente
+dist/
+.angular/
+
+# Ignora configurações de IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Ignora arquivos de teste
+coverage/
+*.spec.ts
+
+# Ignora arquivos de log
+*.log
+npm-debug.log*
+
+# Ignora Git
+.git/
+.gitignore
+
+# Ignora README e documentação
+README.md
+docs/
+
+# Ignora arquivos de ambiente local (usaremos variáveis do Docker)
+.env
+.env.local
