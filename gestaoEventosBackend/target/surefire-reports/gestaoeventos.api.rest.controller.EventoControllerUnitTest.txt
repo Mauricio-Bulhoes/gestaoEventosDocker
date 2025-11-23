@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: gestaoeventos.api.rest.controller.EventoControllerUnitTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.215 s -- in gestaoeventos.api.rest.controller.EventoControllerUnitTest

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: gestaoeventos.api.rest.repository.EventoRepositoryIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.356 s -- in gestaoeventos.api.rest.repository.EventoRepositoryIntegrationTest

@@ -1,0 +1,15 @@
+gestaoeventos\api\rest\ApplicationContextLoad.class
+gestaoeventos\api\rest\mapper\EventoMapper.class
+gestaoeventos\api\rest\model\Evento.class
+gestaoeventos\api\rest\dto\EventoResponseDTO.class
+gestaoeventos\api\rest\SwaggerConfig.class
+gestaoeventos\api\rest\GestaoEventosBackendApplication.class
+gestaoeventos\api\rest\controller\EventoController.class
+gestaoeventos\api\rest\repository\EventoRepository.class
+gestaoeventos\api\rest\service\EventoService.class
+gestaoeventos\api\rest\config\CorsConfig$1.class
+gestaoeventos\api\rest\ControleExcecoes.class
+gestaoeventos\api\rest\ServletInitializer.class
+gestaoeventos\api\rest\dto\EventoRequestDTO.class
+gestaoeventos\api\rest\config\CorsConfig.class
+gestaoeventos\api\rest\ObjetoErro.class
